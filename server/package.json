@@ -1,0 +1,25 @@
+{
+  "name": "markdownlanding-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "deploy": "yarn build && serverless deploy"
+  },
+  "dependencies": {
+    "@types/aws-lambda": "^8.10.64",
+    "@types/aws-sdk": "^2.7.0",
+    "apollo-server": "^2.19.0",
+    "apollo-server-lambda": "^2.19.0",
+    "aws-lambda": "^1.0.6",
+    "aws-sdk": "^2.804.0",
+    "graphql": "^15.4.0",
+    "isomorphic-fetch": "^3.0.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/isomorphic-fetch": "^0.0.35",
+    "@types/uuid": "^8.3.0"
+  }
+}
