@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch'
 
-const BASE_URL = 'https://api.zeit.co'
+export async function deploy() {
+  const response = await fetch("https://api.vercel.com/v1/integrations/deploy/prj_4POe89WKW3I0NRZsh3GL32gOVUop/xi9ZyDs2xn", { method: 'POST' }).then(res => res.json());
 
-export function deploy() {
-
+  return response;
 }

@@ -1,3 +1,4 @@
+require("dotenv").config()
 module.exports = {
   siteMetadata: {
     title: `Markdown Landing Page`,
@@ -10,7 +11,7 @@ module.exports = {
       options: {
         typeName: 'MDLAPI',
         fieldName: 'mdlapi',
-        url: 'https://g1j1zjqq7d.execute-api.us-east-1.amazonaws.com/dev/graphql',
+        url: process.env.GATSBY_MDL_GRAPHQL_API
       }
     },
     `gatsby-plugin-react-helmet`,

@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { getItem, updateItem } from "./dynamodb";
 import { User } from "./types";
+import { deploy } from './zeitAPI'
 
 export const updateUser = async (parent: any, {
   id,
@@ -60,16 +61,21 @@ export const createPage = async (parent: any, { userId, name }: { userId: string
   const result = await updateItem({
     TableName: process.env.PAGE_TABLE!,
     Key: { userId, id },
-    UpdateExpression: "SET #name = :name, createdAt = :createdAt",
+    UpdateExpression: "SET #name = :name, createdAt = :createdAt, content = :content",
     ExpressionAttributeValues: {
       ":name": name,
       ":createdAt": new Date().toISOString(),
+      ":content": "",
     },
     ExpressionAttributeNames: {
       '#name': 'name',
     },
     ReturnValues: "ALL_NEW",
   })
+
+  console.log("deploy trigger");
+
+  await deploy()
 
   return result.Attributes;
 }
@@ -89,6 +95,8 @@ export const savePage = async (parent: any, { id, userId, content }: { id: strin
     },
     ReturnValues: "ALL_NEW",
   })
+
+  await deploy()
 
   return result.Attributes;
 }
