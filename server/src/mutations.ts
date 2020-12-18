@@ -3,11 +3,22 @@ import { getItem, updateItem } from "./dynamodb";
 import { User } from "./types";
 import { deploy } from './zeitAPI'
 
-export const updateUser = async (parent: any, {
-  id,
-}: {
+type UpdateUserArgs = {
+  id: string
+}
+
+type CreatePageArgs = {
+  userId: string;
+  name: string;
+}
+
+type SavePageArgs = {
   id: string;
-}): Promise<User> => {
+  userId: string;
+  content: string;
+}
+
+export const updateUser = async (parent: any, { id } : UpdateUserArgs): Promise<User> => {
   const result = await getItem({
     TableName: process.env.USER_TABLE!,
     Key: {
@@ -17,45 +28,26 @@ export const updateUser = async (parent: any, {
 
   const user = result.Item;
 
-  if (user) {
-    const result = await updateItem({
-      TableName: process.env.USER_TABLE!,
-      Key: { id },
-      UpdateExpression: "SET lastSignedInAt = :lastSignedInAt",
-      ExpressionAttributeValues: {
-        ":lastSignedInAt": new Date().toISOString()
-      },
-      ReturnValues: "ALL_NEW",
-    })
+  const updateResult = await updateItem({
+    TableName: process.env.USER_TABLE!,
+    Key: { id },
+    UpdateExpression: "SET createdAt = :createdAt, lastSignedInAt = :lastSignedInAt",
+    ExpressionAttributeValues: {
+      ":createdAt": user ? user.createdAt : new Date().toISOString(),
+      ":lastSignedInAt": new Date().toISOString()
+    },
+    ReturnValues: "ALL_NEW",
+  })
 
-    return {
-      id,
-      createdAt: result.Attributes?.createdAt,
-      lastSignedInAt: result.Attributes?.lastSignedInAt,
-    }
+  return {
+    id,
+    createdAt: updateResult.Attributes?.createdAt,
+    lastSignedInAt: updateResult.Attributes?.lastSignedInAt,
   }
-  else {
-    const result = await updateItem({
-      TableName: process.env.USER_TABLE!,
-      Key: { id },
-      UpdateExpression: "SET createdAt = :createdAt, lastSignedInAt = :lastSignedInAt",
-      ExpressionAttributeValues: {
-        ":createdAt": new Date().toISOString(),
-        ":lastSignedInAt": new Date().toISOString()
-      },
-      ReturnValues: "ALL_NEW",
-    })
-
-    return {
-      id,
-      createdAt: result.Attributes?.createdAt,
-      lastSignedInAt: result.Attributes?.lastSignedInAt,
-    }
-   }
 
 };
 
-export const createPage = async (parent: any, { userId, name }: { userId: string, name: string }) => {
+export const createPage = async (parent: any, { userId, name }: CreatePageArgs) => {
   const id = uuidv4()
   
   const result = await updateItem({
@@ -73,14 +65,15 @@ export const createPage = async (parent: any, { userId, name }: { userId: string
     ReturnValues: "ALL_NEW",
   })
 
-  console.log("deploy trigger");
 
-  await deploy()
+  if (process.env.STAGE === 'prod') {
+    await deploy()
+  }
 
   return result.Attributes;
 }
 
-export const savePage = async (parent: any, { id, userId, content }: { id: string, userId: string, content: string }) => {
+export const savePage = async (parent: any, { id, userId, content }: SavePageArgs) => {
   
   const result = await updateItem({
     TableName: process.env.PAGE_TABLE!,
@@ -96,7 +89,9 @@ export const savePage = async (parent: any, { id, userId, content }: { id: strin
     ReturnValues: "ALL_NEW",
   })
 
-  await deploy()
+  if (process.env.STAGE === 'prod') {
+    await deploy()
+  }
 
   return result.Attributes;
 }

@@ -30,6 +30,8 @@ provider:
 functions:
     graphql:
         handler: dist/graphql.handler
+        environment:
+            STAGE: ${self:provider.stage}
         events:
             - http:
                   path: graphql

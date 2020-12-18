@@ -3,10 +3,6 @@ import { allPages, page } from './queries'
 import { updateUser, createPage, savePage } from './mutations'
 
 const schema = gql`
-  type Hello {
-    world: String
-  }
-
   type User {
     id: ID!
     createdAt: String!
@@ -23,7 +19,6 @@ const schema = gql`
   }
 
   type Query {
-    hello: Hello
     allPages: [LandingPage!]!
     page(id: ID!, userId: ID!): LandingPage
   }
@@ -37,9 +32,6 @@ const schema = gql`
 
 const resolvers = {
   Query: {
-    hello: () => ({
-      world: 'Hello world 2'
-    }),
     allPages,
     page,
   },

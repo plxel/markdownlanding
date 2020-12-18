@@ -6,7 +6,7 @@
     "strict": true,
     "baseUrl": "./",
     "typeRoots": [
-      "src",
+      "src/types.d.ts",
       "node_modules/@types"
     ],
     "types": [
