@@ -8,11 +8,10 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
-
-import Header from "./header"
-import { Box } from 'rebass'
+import "fontsource-open-sans"
+import Header from "./Header"
+import { Box } from "../theme"
 import "./layout.css"
-import theme from "../themes/theme"
 
 const Layout = ({ children }) => {
   const data = useStaticQuery(graphql`
@@ -28,16 +27,9 @@ const Layout = ({ children }) => {
   return (
     <>
       <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
-      <Box m={[3,4,5]} mt={[2,3,4]}>
+      <Box m={[3, 4, 5]} mt={[2, 3, 4]}>
         <main>{children}</main>
-        <footer style={{
-          marginTop: `2rem`
-        }}>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.com">Gatsby</a>
-        </footer>
-        </Box>
+      </Box>
     </>
   )
 }

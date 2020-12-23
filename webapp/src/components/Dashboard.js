@@ -1,96 +1,73 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import styled from 'styled-components';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Link } from 'gatsby';
+import { gql, useQuery } from '@apollo/client';
+import { Box } from '../theme';
+import CreatePage from './CreatePage';
 
-import { useAuth0 } from '@auth0/auth0-react'
-import { useStaticQuery, graphql, Link } from "gatsby"
-import { Button, Box, Input } from 'theme-ui'
-import { useMutation, gql, useQuery } from '@apollo/client'
+const Row = styled(Box).attrs({
+  p: 2,
+  borderBottom: 1,
+  borderBottomStyle: 'dashed',
+  borderColor: 'grays.2',
+  display: 'flex',
+  justifyContent: 'space-between',
+})`
+  &:hover {
+    background-color: ${props => props.theme.colors.grays[0]};
+  }
+`;
 
-const CreatePage = ({ userId }) => {
-  const [name, setName] = useState()
-  const [createPage, { data, loading }] = useMutation(
+const useUserPages = user => {
+  const { data } = useQuery(
     gql`
-      mutation createPage($userId: ID!, $name: String!) {
-        createPage(userId: $userId, name: $name) {
+      query allUserPages($userId: ID!) {
+        allUserPages(userId: $userId) {
           id
+          name
+          published
         }
       }
     `,
-    {
-      variables: { 
-        name,
-        userId
-       }
-    }
-  )
+    { variables: { userId: user?.sub } }
+  );
 
-  if (data) {
-    return <Link to={`/pages/${data.createPage.id}`}>Start editing your landing page</Link>
-  }
+  return data?.allUserPages || [];
+};
 
-  return (
-    <div>
-      <Input
-        placeholder='Name your page'
-        name="name"
-        value={name}
-        onChange={e => setName(e.target.value)} />
-      <Button disabled={loading} onClick={() => createPage()}>Create new page</Button>
-    </div>
-  )
-}
-
-
-export const Dashboard = () => {
+const Dashboard = () => {
   const { user } = useAuth0();
 
-  
-  const data = useStaticQuery(graphql`
-    query {
-      mdlapi {
-        allPages {
-          id
-          userId
-          createdAt
-          name
-        }
-      }
-    }
-  `)
-
-  // TODO: this is insecure, we should filter on the server
-  const pages = data.mdlapi.allPages.filter(page => page.userId === user?.sub)
-
-  const [list, setList] = useState(pages)
-
-  const liveData = useQuery(gql`
-    query {
-          allPages {
-          id
-          userId
-          createdAt
-          name
-        }
-    }
-  `)
-
-  useEffect(() => {
-    if (liveData.data) {
-      setList(liveData.data.allPages.filter(page => page.userId === user?.sub))
-    }
-  }, [liveData.data])
+  const pages = useUserPages(user);
 
   if (!user) {
     return null;
   }
 
+  return (
+    <Box width="500px" mx="auto">
+      <CreatePage userId={user.sub} />
+      <Box mt={4}>
+        {pages.map(page => (
+          <Row key={page.id}>
+            <div>{page.name}</div>
+            <div>
+              <Link to={`/app/edit/${page.id}`}>Edit</Link>{' '}
+              {!page.published && (
+                <Link to={`/app/publish/${page.id}`}>Publish</Link>
+              )}
+              {page.published && (
+                <a target="_blank" rel="noreferrer" href={`/pages/${page.id}`}>
+                  Open
+                </a>
+              )}
+            </div>
+          </Row>
+        ))}
+      </Box>
+    </Box>
+  );
+};
 
-  return <div>
-
-    {user.nickname}
-  <CreatePage userId={user.sub} />
-    <div>
-      {list.map(page => <div><Link to={`/pages/${page.id}`}>{page.name}</Link></div>)}
-    </div>
-    
-  </div>
-}
+export default Dashboard;

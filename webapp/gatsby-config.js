@@ -1,4 +1,5 @@
-require("dotenv").config()
+require('dotenv').config();
+
 module.exports = {
   siteMetadata: {
     title: `Markdown Landing Page`,
@@ -6,13 +7,14 @@ module.exports = {
     author: `@gatsbyjs`,
   },
   plugins: [
+    `gatsby-plugin-styled-components`,
     {
       resolve: 'gatsby-source-graphql',
       options: {
         typeName: 'MDLAPI',
         fieldName: 'mdlapi',
-        url: process.env.GATSBY_MDL_GRAPHQL_API
-      }
+        url: process.env.GATSBY_MDL_GRAPHQL_API,
+      },
     },
     `gatsby-plugin-react-helmet`,
     {
@@ -40,4 +42,4 @@ module.exports = {
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,
   ],
-}
+};

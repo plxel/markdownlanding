@@ -1,7 +1,16 @@
-import fetch from 'isomorphic-fetch'
+import fetch from 'isomorphic-fetch';
+import { getSecretsValues } from './getSecrets';
 
 export async function deploy() {
-  const response = await fetch("https://api.vercel.com/v1/integrations/deploy/prj_4POe89WKW3I0NRZsh3GL32gOVUop/xi9ZyDs2xn", { method: 'POST' }).then(res => res.json());
+  const { vercel_webhook_endpoint } = await getSecretsValues('Vercel', ['vercel_webhook_endpoint']);
+
+  if (!vercel_webhook_endpoint) {
+    return Promise.resolve();
+  }
+
+  const response = await fetch(vercel_webhook_endpoint, { method: 'POST' }).then((res) =>
+    res.json()
+  );
 
   return response;
 }
