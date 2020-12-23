@@ -11,7 +11,7 @@ Stack:
 - TypeScript
 - Stripe
 
-**Frontend:**
+**Frontend:** (rough UX/UI)
 - Auth0
 - Gatsby
 - styled-system
