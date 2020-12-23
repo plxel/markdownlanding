@@ -1,6 +1,6 @@
 # Markdown Landing Page
 
-This is an example app 
+This is an example app with rough ux/ui
 
 Stack:
 
@@ -11,7 +11,7 @@ Stack:
 - TypeScript
 - Stripe
 
-**Frontend:** (rough UX/UI)
+**Frontend:** 
 - Auth0
 - Gatsby
 - styled-system
