@@ -69,9 +69,7 @@ export const createPage = async (parent: any, { userId, name }: CreatePageArgs) 
     },
   });
 
-  if (process.env.STAGE === 'prod') {
-    await deploy();
-  }
+  await deploy();
 
   return result.Attributes;
 };
@@ -87,9 +85,7 @@ export const savePage = async (parent: any, { id, userId, name, content }: SaveP
     },
   });
 
-  if (process.env.STAGE === 'prod') {
-    await deploy();
-  }
+  await deploy();
 
   return result.Attributes;
 };

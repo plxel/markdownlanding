@@ -40,9 +40,7 @@ export const handler = async (
         },
       });
 
-      if (process.env.STAGE === 'prod') {
-        await deploy();
-      }
+      await deploy();
     }
 
     const response = {

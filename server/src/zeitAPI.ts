@@ -2,6 +2,8 @@ import fetch from 'isomorphic-fetch';
 import { getSecretsValues } from './getSecrets';
 
 export async function deploy() {
+  // TODO: skip if not prod
+
   const { vercel_webhook_endpoint } = await getSecretsValues('Vercel', ['vercel_webhook_endpoint']);
 
   if (!vercel_webhook_endpoint) {
