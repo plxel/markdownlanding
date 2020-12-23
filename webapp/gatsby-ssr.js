@@ -19,7 +19,7 @@ export const wrapRootElement = ({ element }) => (
       navigate={navigate}
       domain="markdownlandingforany.eu.auth0.com"
       clientId="0cREuY0WqJZhHi7dux5iDkF0Y1HvgoA1"
-      redirectUri="http://localhost:8000/"
+      redirectUri={process.env.GATSBY_DOMAIN}
     >
       <ThemeProvider theme={theme}>{element}</ThemeProvider>
     </Auth0Provider>
